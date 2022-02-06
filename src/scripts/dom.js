@@ -1,57 +1,60 @@
 function domMain() {
-  function removeHover(e) {
-    e.target.classList.remove('hover');
+  function removeHover() {
     document
-      .querySelectorAll('.hover')
-      .forEach((el) => el.classList.remove('hover'));
+      .querySelectorAll('.hoverfit')
+      .forEach((el) => el.classList.remove('hoverfit'));
+    document
+      .querySelectorAll('.hovernofit')
+      .forEach((el) => el.classList.remove('hovernofit'));
   }
   function checkSize(depth, element) {
-    if (depth === 1) return true;
-    let elements = [];
+    if (depth === 1) return { check: true, renderSize: 1 };
+    const elements = [];
     function inner(depthh, elementt) {
       if (elementt === null) return; // wont add to list | tried with throw error but it broke lol
       if (depthh >= 1) {
         elements.push(elementt);
-        console.log(elementt);
         inner(depthh - 1, elementt.nextElementSibling);
       }
     }
     inner(depth, element);
-    if (elements.length !== depth) return false; // safety check if element is off gameboard
+    if (elements.length !== depth)
+      return { check: false, renderSize: elements.length }; // safety check if element is off gameboard
 
-    if (elements.length === 2) {
-      if (
-        elements[0].hasAttribute('data-edge') &&
-        elements[1].hasAttribute('data-edge')
-      )
-        return false;
-      return true;
-    }
+    let counter = 0;
+    let helper = 1;
+    elements.reduce((prev, now) => {
+      // check if prev is not null + if on diffrent levels
+      if (prev && now)
+        if (now.getAttribute('data-y') !== prev.getAttribute('data-y'))
+          helper = 0;
+      counter += helper;
+      return now;
+    }, null);
 
-    elements = elements.slice(1, -1); // remove first and last element
-    let check = 0;
-    elements.forEach((e) => {
-      if (e.hasAttribute('data-edge')) check++;
-    });
-    return !check > 0; // stupid method but its 4am and i hope it works
+    if (counter === depth) return { check: true, renderSize: depth };
+
+    return { check: false, renderSize: counter };
   }
 
-  function addHover(depth, element) {
-    if (element === null) return;
+  function addHover(depth, element, isFit) {
+    if (element === null) return; // to not throw error when off screen
     if (depth >= 1) {
-      element.classList = 'hover';
-      addHover(depth - 1, element.nextElementSibling);
+      element.classList = isFit ? 'hoverfit' : 'hovernofit';
+      addHover(depth - 1, element.nextElementSibling, isFit);
     }
   }
   document.querySelector('.player').addEventListener('mouseover', (e) => {
-    // console.log(e);
-    const length = 4;
+    const length = 6;
+    // safety check
     if (!e.target.classList.value) {
+      const x = checkSize(length, e.target);
+      addHover(x.renderSize, e.target, x.check);
       e.target.addEventListener('mouseout', removeHover);
-      addHover(length, e.target);
-
-      if (checkSize(length, e.target)) console.log('jest ok');
-      else console.log('nie ok');
+      // console.log({
+      //   x: e.target.getAttribute('data-x'),
+      //   y: e.target.getAttribute('data-y'),
+      // });
     }
   });
 }
