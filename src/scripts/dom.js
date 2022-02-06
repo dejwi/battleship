@@ -8,33 +8,13 @@ function domMain() {
       .forEach((el) => el.classList.remove('hovernofit'));
   }
   function checkSize(depth, element) {
-    if (depth === 1) return { check: true, renderSize: 1 };
-    const elements = [];
-    function inner(depthh, elementt) {
-      if (elementt === null) return; // wont add to list | tried with throw error but it broke lol
-      if (depthh >= 1) {
-        elements.push(elementt);
-        inner(depthh - 1, elementt.nextElementSibling);
-      }
-    }
-    inner(depth, element);
-    if (elements.length !== depth)
-      return { check: false, renderSize: elements.length }; // safety check if element is off gameboard
-
-    let counter = 0;
-    let helper = 1;
-    elements.reduce((prev, now) => {
-      // check if prev is not null + if on diffrent levels
-      if (prev && now)
-        if (now.getAttribute('data-y') !== prev.getAttribute('data-y'))
-          helper = 0;
-      counter += helper;
-      return now;
-    }, null);
-
-    if (counter === depth) return { check: true, renderSize: depth };
-
-    return { check: false, renderSize: counter };
+    return {
+      check: +element.getAttribute('data-x') + depth <= 10,
+      renderSize:
+        10 - +element.getAttribute('data-x') < depth
+          ? 10 - +element.getAttribute('data-x')
+          : depth,
+    };
   }
 
   function addHover(depth, element, isFit) {
