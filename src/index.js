@@ -1,4 +1,5 @@
-// import "./style.scss";
+import './styles/main.sass';
+import { domMain } from './scripts/dom';
 
 const shipFactory = (len, posx, posy, isX) => {
   const isHorizontal = isX;
@@ -69,4 +70,6 @@ const gameboardFactory = () => {
   };
   return { shipPlace, reciveAttack, getSunk };
 };
-export { shipFactory, gameboardFactory };
+export { shipFactory, gameboardFactory }; // for tests
+
+domMain();

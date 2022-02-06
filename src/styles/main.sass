@@ -1,0 +1,31 @@
+@import 'variables'
+@import 'global'
+
+body
+  background: $bg
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  & > span
+    font-size: 2.5rem
+    font-weight: 200
+  main
+    display: flex
+    gap: $boardsize/2
+
+.gameboard
+  width: $boardsize
+  height: $boardsize
+  display: grid
+  grid-template-columns: repeat(10,1fr)
+  grid-template-rows: repeat(10,1fr)
+  gap: 0.5%
+  pointer-events: none
+  div
+    background: rgba(231, 210, 204, 0.41)
+    border: 1px solid rgba(115, 115, 115, 1)
+    border-radius: 4px
+    pointer-events: auto
+  div.hover
+    background: rgba(228, 161, 142, 0.41)
