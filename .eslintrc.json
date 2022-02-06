@@ -18,6 +18,8 @@
     ],
     "rules": {
         "import/prefer-default-export": "off",
-        "prettier/prettier": ["error", { "singleQuote": true }]
+        "prettier/prettier": ["error", { "singleQuote": true }],
+        "no-plusplus": "off",
+        "no-param-reassign": [2, { "props": false }]
     }
 }

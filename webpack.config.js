@@ -1,4 +1,4 @@
-/* eslint-disable indent */
+/* eslint-disable prettier/prettier */
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
@@ -17,7 +17,11 @@ module.exports = {
     clean: true,
   },
   devServer: {
-    contentBase: "./dist",
+    static: {
+      directory: path.join(__dirname, 'public'),
+    },
+    compress: true,
+    port: 9000,
   },
   module: {
     rules: [
