@@ -7,30 +7,49 @@ function domMain() {
       .querySelectorAll('.hovernofit')
       .forEach((el) => el.classList.remove('hovernofit'));
   }
-  function checkSize(depth, element) {
+  function checkSize(depth, element, isHorizontal = true) {
+    const orient = isHorizontal ? 'x' : 'y';
     return {
-      check: +element.getAttribute('data-x') + depth <= 10,
+      check: +element.getAttribute(`data-${orient}`) + depth <= 10,
       renderSize:
-        10 - +element.getAttribute('data-x') < depth
-          ? 10 - +element.getAttribute('data-x')
+        10 - +element.getAttribute(`data-${orient}`) < depth
+          ? 10 - +element.getAttribute(`data-${orient}`)
           : depth,
     };
   }
 
-  function addHover(depth, element, isFit) {
-    if (element === null) return; // to not throw error when off screen
-    if (depth >= 1) {
-      element.classList = isFit ? 'hoverfit' : 'hovernofit';
-      addHover(depth - 1, element.nextElementSibling, isFit);
+  function addHover(depth, element, isFit, isHorizontal = true) {
+    const classAdd = isFit ? 'hoverfit' : 'hovernofit';
+    const startPos = {
+      x: element.getAttribute(`data-x`),
+      y: element.getAttribute(`data-y`),
+    };
+
+    for (let i = 0; i < depth; i++) {
+      if (isHorizontal) {
+        document.querySelector(
+          `.player div[data-x="${+startPos.x + i}"][data-y="${startPos.y}"]`
+        ).classList = classAdd;
+      } else {
+        document.querySelector(
+          `.player div[data-x="${startPos.x}"][data-y="${+startPos.y + i}"]`
+        ).classList = classAdd;
+      }
     }
   }
+
+  function shipPlacement(size, element, isHorizontal) {
+    const x = checkSize(size, element, isHorizontal);
+    addHover(x.renderSize, element, x.check, isHorizontal);
+    element.addEventListener('mouseout', removeHover);
+  }
   document.querySelector('.player').addEventListener('mouseover', (e) => {
-    const length = 6;
+    const length = 3;
+    const isHorizontal = false;
     // safety check
     if (!e.target.classList.value) {
-      const x = checkSize(length, e.target);
-      addHover(x.renderSize, e.target, x.check);
-      e.target.addEventListener('mouseout', removeHover);
+      shipPlacement(length, e.target, isHorizontal);
+
       // console.log({
       //   x: e.target.getAttribute('data-x'),
       //   y: e.target.getAttribute('data-y'),
