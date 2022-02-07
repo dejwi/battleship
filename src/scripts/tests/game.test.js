@@ -1,4 +1,4 @@
-import { shipFactory, gameboardFactory } from '../../index';
+import { shipFactory, gameboardFactory } from '../gamecore';
 // TODO: create real jest mocks
 test('Ship destroy', () => {
   const shipmock = shipFactory(3, 0, 0, true);
