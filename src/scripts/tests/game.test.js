@@ -15,6 +15,9 @@ describe('gameboard', () => {
   test('Ship take hit', () => {
     expect(gameboardmock.reciveAttack(0, 0)).toBe('hit');
   });
+  test('Dont lose game', () => {
+    expect(gameboardmock.checkLoss()).toBe(false);
+  });
   test('Miss', () => {
     expect(gameboardmock.reciveAttack(3, 0)).toBe('miss');
   });
@@ -29,5 +32,8 @@ describe('gameboard', () => {
         isHorizontal: true,
       },
     ]);
+  });
+  test('Lose game', () => {
+    expect(gameboardmock.checkLoss()).toBe(true);
   });
 });
