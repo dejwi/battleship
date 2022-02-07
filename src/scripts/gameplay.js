@@ -1,7 +1,19 @@
 import { shipHover, doShipColide, checkSize, addClasses } from './dom';
 import { gameboardFactory, shipFactory } from './gamecore';
 
+function testBoard() {
+  const gameboardmock = gameboardFactory();
+  gameboardmock.shipPlace(shipFactory(3, 0, 0, true));
+  gameboardmock.shipPlace(shipFactory(5, 9, 0, false));
+  gameboardmock.shipPlace(shipFactory(1, 2, 4, false));
+  gameboardmock.shipPlace(shipFactory(4, 0, 9, true));
+  gameboardmock.shipPlace(shipFactory(4, 5, 6, true));
+  gameboardmock.shipPlace(shipFactory(4, 4, 1, false));
+  return gameboardmock;
+}
+
 const playerBoard = gameboardFactory();
+const enemyBoard = testBoard();
 
 let gameStart = true;
 function initPlayerStart() {
@@ -46,16 +58,26 @@ function initPlayerStart() {
       }
   });
 }
-
 function gameStartEnd() {
   gameStart = false;
   document.querySelector('.rotate').classList.add('hide');
+}
 
-  console.log(playerBoard);
+function initGame() {
+  document.querySelector('.enemy').addEventListener('click', (e) => {
+    if (!e.target.classList.value.includes('gameboard')) {
+      if (e.target.classList.value) return;
+      const x = +e.target.getAttribute('data-x');
+      const y = +e.target.getAttribute('data-y');
+      e.target.classList = enemyBoard.reciveAttack(x, y);
+      // console.log({ won: enemyBoard.checkLoss(), sunk: enemyBoard.getSunk().length });
+    }
+  });
 }
 
 function gameplayHandler() {
   initPlayerStart();
+  initGame(); // debug
 }
 
 export { gameplayHandler };

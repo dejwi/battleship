@@ -12,7 +12,7 @@ const shipFactory = (len, posx, posy, isX) => {
   };
 
   const isSunk = () => {
-    return hitCount === length;
+    return hitCount >= length;
   };
 
   return { length, startPos, hitCount, isSunk, isHorizontal, hit };
@@ -67,10 +67,9 @@ const gameboardFactory = () => {
   };
 
   const checkLoss = () => {
-    return ships.reduce((prev, now) => {
-      if (prev !== 'helper') return prev.isSunk() && now.isSunk();
-      return now.isSunk();
-    }, 'helper');
+    return ships.every((e) => {
+      return e.isSunk();
+    });
   };
   return { shipPlace, reciveAttack, getSunk, ships, checkLoss };
 };
