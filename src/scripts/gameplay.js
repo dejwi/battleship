@@ -1,5 +1,7 @@
 import { shipHover, doShipColide, checkSize, addClasses } from './dom';
 import { gameboardFactory, shipFactory } from './gamecore';
+import { drawEnemyShipsDebug } from './debug';
+import { getRandomBoard } from './misc';
 
 function testBoard() {
   const gameboardmock = gameboardFactory();
@@ -78,6 +80,7 @@ function initGame() {
 function gameplayHandler() {
   initPlayerStart();
   initGame(); // debug
+  drawEnemyShipsDebug(getRandomBoard()); // debug
 }
 
 export { gameplayHandler };
