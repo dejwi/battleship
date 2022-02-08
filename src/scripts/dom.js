@@ -74,5 +74,22 @@ function shipHover(size, element, isHorizontal) {
   addClasses(x.renderSize, element, isValid, isHorizontal);
   element.addEventListener('mouseout', removeHover);
 }
+function markSunk(data, boardClass) {
+  // boards class: 'player' || 'enemy'
+  // x: 0,
+  //       y: 0,
+  //       length: 3,
+  //       isHorizontal: true,
+  if (data.isHorizontal)
+    for (let i = 0; i < data.length; i++)
+      document.querySelector(
+        `.${boardClass} div[data-x="${data.x + i}"][data-y="${data.y}"]`
+      ).classList = 'sunk';
+  else
+    for (let i = 0; i < data.length; i++)
+      document.querySelector(
+        `.${boardClass} div[data-x="${data.x}"][data-y="${data.y + i}"]`
+      ).className = 'sunk';
+}
 
-export { shipHover, doShipColide, checkSize, addClasses };
+export { shipHover, doShipColide, checkSize, addClasses, markSunk };

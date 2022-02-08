@@ -13,6 +13,9 @@ body
   main
     display: flex
     gap: $boardsize/2
+  & > h2
+    font-size: 4rem
+    margin: 2rem 
 
 .gameboard
   width: $boardsize
@@ -35,6 +38,8 @@ body
     background: $hit
   div.miss
     background: $miss
+  div.sunk
+    background: $sunk
 
 .rotate
   font-size: $boardsize/12

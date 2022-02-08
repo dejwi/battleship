@@ -1,25 +1,22 @@
-import { shipHover, doShipColide, checkSize, addClasses } from './dom';
+import {
+  shipHover,
+  doShipColide,
+  checkSize,
+  addClasses,
+  markSunk,
+} from './dom';
+
 import { gameboardFactory, shipFactory } from './gamecore';
-import { drawEnemyShipsDebug } from './debug';
-import { getRandomBoard } from './misc';
+import { getEnemy } from './enemy';
 
-function testBoard() {
-  const gameboardmock = gameboardFactory();
-  gameboardmock.shipPlace(shipFactory(3, 0, 0, true));
-  gameboardmock.shipPlace(shipFactory(5, 9, 0, false));
-  gameboardmock.shipPlace(shipFactory(1, 2, 4, false));
-  gameboardmock.shipPlace(shipFactory(4, 0, 9, true));
-  gameboardmock.shipPlace(shipFactory(4, 5, 6, true));
-  gameboardmock.shipPlace(shipFactory(4, 4, 1, false));
-  return gameboardmock;
-}
-
+const sizes = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
 const playerBoard = gameboardFactory();
-const enemyBoard = testBoard();
+const enemyBoard = getEnemy(1);
+
+const infoDiv = document.querySelector('body>h2');
 
 let gameStart = true;
 function initPlayerStart() {
-  const sizes = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
   let curr = 0;
   let isHorizontal = true;
   document.querySelector('.rotate').addEventListener('click', () => {
@@ -50,8 +47,8 @@ function initPlayerStart() {
         playerBoard.shipPlace(
           shipFactory(
             sizes[curr],
-            e.target.getAttribute('data-x'),
-            e.target.getAttribute('data-y'),
+            +e.target.getAttribute('data-x'),
+            +e.target.getAttribute('data-y'),
             isHorizontal
           )
         );
@@ -60,27 +57,53 @@ function initPlayerStart() {
       }
   });
 }
+
+function initGame() {
+  infoDiv.textContent = 'Attack and play!';
+  let currentTurn = playerBoard;
+
+  const playerClick = (e) => {
+    if (currentTurn !== playerBoard) return;
+    if (!e.target.classList.value.includes('gameboard')) {
+      if (e.target.classList.value) return;
+
+      const x = +e.target.getAttribute('data-x');
+      const y = +e.target.getAttribute('data-y');
+
+      const sunk = enemyBoard.board.getSunk();
+      const tempSunk = sunk.length;
+      e.target.classList = enemyBoard.board.reciveAttack(x, y); // miss||hit
+      if (sunk.length !== tempSunk) markSunk(sunk[sunk.length - 1], 'enemy');
+
+      currentTurn = enemyBoard;
+      setTimeout(() => {
+        const sunkp = playerBoard.getSunk();
+        const tempSunkp = sunkp.length;
+
+        const attackPos = enemyBoard.getMove();
+        document.querySelector(
+          `.player div[data-x="${attackPos.x}"][data-y="${attackPos.y}"]`
+        ).classList = playerBoard.reciveAttack(attackPos.x, attackPos.y);
+        if (sunkp.length !== tempSunkp)
+          markSunk(sunkp[sunkp.length - 1], 'player');
+
+        setTimeout(() => {
+          currentTurn = playerBoard;
+        }, 500);
+      }, 500);
+    }
+  };
+  document.querySelector('.enemy').addEventListener('click', playerClick);
+}
 function gameStartEnd() {
   gameStart = false;
   document.querySelector('.rotate').classList.add('hide');
-}
-
-function initGame() {
-  document.querySelector('.enemy').addEventListener('click', (e) => {
-    if (!e.target.classList.value.includes('gameboard')) {
-      if (e.target.classList.value) return;
-      const x = +e.target.getAttribute('data-x');
-      const y = +e.target.getAttribute('data-y');
-      e.target.classList = enemyBoard.reciveAttack(x, y);
-      // console.log({ won: enemyBoard.checkLoss(), sunk: enemyBoard.getSunk().length });
-    }
-  });
+  initGame();
 }
 
 function gameplayHandler() {
   initPlayerStart();
-  initGame(); // debug
-  drawEnemyShipsDebug(getRandomBoard()); // debug
+  // drawEnemyShipsDebug(getRandomBoard()); // debug
 }
 
 export { gameplayHandler };
