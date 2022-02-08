@@ -21,6 +21,7 @@
         "prettier/prettier": ["error", { "singleQuote": true }],
         "no-plusplus": "off",
         "no-param-reassign": [2, { "props": false }],
-        "no-use-before-define": ["error", {"functions": false, "classes": false}]
+        "no-use-before-define": ["error", {"functions": false, "classes": false}],
+        "no-loop-func": "off"
     }
 }
