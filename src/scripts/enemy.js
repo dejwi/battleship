@@ -39,9 +39,26 @@ const getEnemy = () => {
     return { x: choosenHit % 10, y: Math.floor(choosenHit / 10) };
   };
 
+  // when destroying ship this will mark surrouing cells as attacked
+  // lastPos in case when 1-cell ship is one shot | no lastHits data then
+  const updateSurrounding = (lastPos) => {
+    const addMoves = (e) => {
+      const pos = e.x + e.y * 10;
+      const posOff = [0, -10, 10];
+      for (let i = 0; i < 3; i++) {
+        posOff.forEach((n) => {
+          if (!usedMoves.includes(pos - 1 + i + n))
+            usedMoves.push(pos - 1 + i + n);
+        });
+      }
+    };
+    if (lastHits) lastHits.forEach(addMoves);
+    else addMoves(lastPos);
+  };
   const updateInfo = (status, data) => {
     // 'hit' || 'sunk'
     if (status === 'sunk') {
+      updateSurrounding(data);
       lastHits = null;
       isHorizontal = null;
     } else if (status === 'hit') {

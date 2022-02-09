@@ -64,7 +64,7 @@ const initGame = () => {
         ).classList = attackResult;
         if (sunkp.length !== tempSunkp) {
           markSunk(sunkp[sunkp.length - 1], 'player');
-          enemyBoard.updateInfo('sunk', null);
+          enemyBoard.updateInfo('sunk', attackPos);
         } else {
           enemyBoard.updateInfo(attackResult, attackPos);
         }
