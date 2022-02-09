@@ -25,10 +25,13 @@ const checkForWinner = () => {
   if (playerBoard.checkLoss()) {
     winnerDiv.textContent = 'You lost:(';
     initEnd();
+    return true;
   } else if (enemyBoard.board.checkLoss()) {
     winnerDiv.textContent = 'You won!';
     initEnd();
+    return true;
   }
+  return false;
 };
 
 const initGame = () => {
@@ -48,7 +51,7 @@ const initGame = () => {
       e.target.classList = enemyBoard.board.reciveAttack(x, y); // miss||hit
       if (sunk.length !== tempSunk) markSunk(sunk[sunk.length - 1], 'enemy');
 
-      checkForWinner();
+      if (checkForWinner()) return; // enemy would attack after win without this return
       currentTurn = enemyBoard;
       setTimeout(() => {
         const sunkp = playerBoard.getSunk();
@@ -60,7 +63,7 @@ const initGame = () => {
         ).classList = playerBoard.reciveAttack(attackPos.x, attackPos.y);
         if (sunkp.length !== tempSunkp)
           markSunk(sunkp[sunkp.length - 1], 'player');
-        checkForWinner();
+        if (checkForWinner()) return;
 
         setTimeout(() => {
           currentTurn = playerBoard;
