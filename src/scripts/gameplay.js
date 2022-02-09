@@ -73,8 +73,8 @@ const initGame = () => {
 
         setTimeout(() => {
           currentTurn = playerBoard;
-        }, 500);
-      }, 500);
+        }, 250);
+      }, 300);
     }
   };
   document.querySelector('.enemy').addEventListener('click', playerClick);
