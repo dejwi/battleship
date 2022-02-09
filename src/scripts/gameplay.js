@@ -13,10 +13,71 @@ const sizes = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
 const playerBoard = gameboardFactory();
 const enemyBoard = getEnemy(1);
 
-const infoDiv = document.querySelector('body>h2');
+const infoDiv = document.querySelector('.maincont>h2');
+
+const checkForWinner = () => {
+  const initEnd = () => {
+    document.querySelector('.maincont').classList.add('blur');
+    document.querySelector('.gameEnd').classList.remove('hidden');
+  };
+  const winnerDiv = document.querySelector('.gameEnd .info');
+
+  if (playerBoard.checkLoss()) {
+    winnerDiv.textContent = 'You lost:(';
+    initEnd();
+  } else if (enemyBoard.board.checkLoss()) {
+    winnerDiv.textContent = 'You won!';
+    initEnd();
+  }
+};
+
+const initGame = () => {
+  infoDiv.textContent = 'Attack and play!';
+  let currentTurn = playerBoard;
+
+  const playerClick = (e) => {
+    if (currentTurn !== playerBoard) return;
+    if (!e.target.classList.value.includes('gameboard')) {
+      if (e.target.classList.value) return;
+
+      const x = +e.target.getAttribute('data-x');
+      const y = +e.target.getAttribute('data-y');
+
+      const sunk = enemyBoard.board.getSunk();
+      const tempSunk = sunk.length;
+      e.target.classList = enemyBoard.board.reciveAttack(x, y); // miss||hit
+      if (sunk.length !== tempSunk) markSunk(sunk[sunk.length - 1], 'enemy');
+
+      checkForWinner();
+      currentTurn = enemyBoard;
+      setTimeout(() => {
+        const sunkp = playerBoard.getSunk();
+        const tempSunkp = sunkp.length;
+
+        const attackPos = enemyBoard.getMove();
+        document.querySelector(
+          `.player div[data-x="${attackPos.x}"][data-y="${attackPos.y}"]`
+        ).classList = playerBoard.reciveAttack(attackPos.x, attackPos.y);
+        if (sunkp.length !== tempSunkp)
+          markSunk(sunkp[sunkp.length - 1], 'player');
+        checkForWinner();
+
+        setTimeout(() => {
+          currentTurn = playerBoard;
+        }, 500);
+      }, 500);
+    }
+  };
+  document.querySelector('.enemy').addEventListener('click', playerClick);
+};
 
 let gameStart = true;
-function initPlayerStart() {
+const gameStartEnd = () => {
+  gameStart = false;
+  document.querySelector('.rotate').classList.add('hide');
+  initGame();
+};
+const initGameStart = () => {
   let curr = 0;
   let isHorizontal = true;
   document.querySelector('.rotate').addEventListener('click', () => {
@@ -56,54 +117,10 @@ function initPlayerStart() {
         if (curr >= sizes.length) gameStartEnd();
       }
   });
-}
+};
 
-function initGame() {
-  infoDiv.textContent = 'Attack and play!';
-  let currentTurn = playerBoard;
-
-  const playerClick = (e) => {
-    if (currentTurn !== playerBoard) return;
-    if (!e.target.classList.value.includes('gameboard')) {
-      if (e.target.classList.value) return;
-
-      const x = +e.target.getAttribute('data-x');
-      const y = +e.target.getAttribute('data-y');
-
-      const sunk = enemyBoard.board.getSunk();
-      const tempSunk = sunk.length;
-      e.target.classList = enemyBoard.board.reciveAttack(x, y); // miss||hit
-      if (sunk.length !== tempSunk) markSunk(sunk[sunk.length - 1], 'enemy');
-
-      currentTurn = enemyBoard;
-      setTimeout(() => {
-        const sunkp = playerBoard.getSunk();
-        const tempSunkp = sunkp.length;
-
-        const attackPos = enemyBoard.getMove();
-        document.querySelector(
-          `.player div[data-x="${attackPos.x}"][data-y="${attackPos.y}"]`
-        ).classList = playerBoard.reciveAttack(attackPos.x, attackPos.y);
-        if (sunkp.length !== tempSunkp)
-          markSunk(sunkp[sunkp.length - 1], 'player');
-
-        setTimeout(() => {
-          currentTurn = playerBoard;
-        }, 500);
-      }, 500);
-    }
-  };
-  document.querySelector('.enemy').addEventListener('click', playerClick);
-}
-function gameStartEnd() {
-  gameStart = false;
-  document.querySelector('.rotate').classList.add('hide');
-  initGame();
-}
-
-function gameplayHandler() {
-  initPlayerStart();
-  // drawEnemyShipsDebug(getRandomBoard()); // debug
-}
+const gameplayHandler = () => {
+  initGameStart();
+};
 
 export { gameplayHandler };
