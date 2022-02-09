@@ -11,7 +11,7 @@ import { getEnemy } from './enemy';
 
 const sizes = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
 const playerBoard = gameboardFactory();
-const enemyBoard = getEnemy(1);
+const enemyBoard = getEnemy();
 
 const infoDiv = document.querySelector('.maincont>h2');
 
@@ -58,11 +58,17 @@ const initGame = () => {
         const tempSunkp = sunkp.length;
 
         const attackPos = enemyBoard.getMove();
+        const attackResult = playerBoard.reciveAttack(attackPos.x, attackPos.y);
         document.querySelector(
           `.player div[data-x="${attackPos.x}"][data-y="${attackPos.y}"]`
-        ).classList = playerBoard.reciveAttack(attackPos.x, attackPos.y);
-        if (sunkp.length !== tempSunkp)
+        ).classList = attackResult;
+        if (sunkp.length !== tempSunkp) {
           markSunk(sunkp[sunkp.length - 1], 'player');
+          enemyBoard.updateInfo('sunk', null);
+        } else {
+          enemyBoard.updateInfo(attackResult, attackPos);
+        }
+
         if (checkForWinner()) return;
 
         setTimeout(() => {
