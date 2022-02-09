@@ -124,6 +124,10 @@ const initGameStart = () => {
 
 const gameplayHandler = () => {
   initGameStart();
+
+  document.querySelector('.gameEnd button').addEventListener('click', () => {
+    window.location.reload(true);
+  });
 };
 
 export { gameplayHandler };
