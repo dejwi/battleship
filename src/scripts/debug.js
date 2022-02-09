@@ -1,6 +1,6 @@
 import { gameboardFactory, shipFactory } from './gamecore';
 
-function drawEnemyShipsDebug(board = null) {
+const drawEnemyShipsDebug = (board = null) => {
   let gameboardmock = gameboardFactory();
   gameboardmock.shipPlace(shipFactory(3, 0, 0, true));
   gameboardmock.shipPlace(shipFactory(5, 9, 0, false));
@@ -20,6 +20,6 @@ function drawEnemyShipsDebug(board = null) {
       ).classList = 'pship'; // wtf
     }
   });
-}
+};
 
 export { drawEnemyShipsDebug };
