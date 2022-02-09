@@ -1,2 +1,0 @@
-# battleship
-battleship using TDD
