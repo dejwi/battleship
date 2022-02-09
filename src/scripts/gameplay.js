@@ -79,6 +79,8 @@ const gameStartEnd = () => {
   gameStart = false;
   document.querySelector('.rotate').classList.add('hide');
   initGame();
+
+  document.querySelector('.enemy').classList.add('started');
 };
 const initGameStart = () => {
   let curr = 0;

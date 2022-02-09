@@ -15,11 +15,35 @@
   main
     display: flex
     gap: $boardsize/2
+    & > div
+      display: flex
+      flex-direction: column
+      align-items: center
+      justify-content: center
+    .rotate
+      font-size: 3.5rem
+      padding: 0.5rem 3rem
+      border-radius: 6px
+      margin-bottom: 0.5rem
+      width: max-content
+      text-align: center
+      background: #f5b6b657
+      cursor: pointer
+      color: rgb(41, 41, 41)
+      &.hide
+        visibility: hidden
   & > h2
     font-size: 4rem
-    margin: 2rem
+    margin: -0.5rem 0 2rem 0
   &.blur
     filter: blur(3px)
+  & > a
+    position: absolute
+    bottom: 5px
+    font-size: 2rem
+    color: rgb(41, 41, 41)
+    text-decoration: none
+    cursor: pointer
 
 .gameEnd
   position: absolute
@@ -32,10 +56,26 @@
   justify-content: center
   background-color: rgba(0, 0, 0, 0.322)
   div
-    font-size: 5rem
+    font-size: 7rem
+    font-weight: 600
+    color: #F05E67
+    text-shadow: 2px 2px 3px #c03838
+    margin-top: -8%
   button
-    font-size: 3rem
-    margin-bottom: 10%
+    border: none
+    cursor: pointer
+    padding: 0.5rem 2rem
+    background-color: #405cf5
+    color: #fff
+    font-size: 1.8rem
+    border-radius: 6px
+    margin-top: -0.5rem
+    box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset,rgba(50, 50, 93, .1) 0 2px 5px 0,rgba(0, 0, 0, .07) 0 1px 1px 0
+    transition: transform 0.2s ease-in-out
+    transition: filter 0.2s ease-in-out
+    &:hover
+      transform: scale(1.05)
+      filter: brightness(110%)
   &.hidden
     visibility: hidden
 
@@ -47,7 +87,7 @@
   grid-template-rows: repeat(10,1fr)
   gap: 0.5%
   div
-    background: rgba(231, 210, 204, 0.41)
+    background: $boardcellbg
     border: 1px solid rgba(115, 115, 115, 1)
     border-radius: 4px
   div.hoverfit
@@ -62,11 +102,11 @@
     background: $miss
   div.sunk
     background: $sunk
+  &.enemy.started
+    div
+      transition: 0.2s ease-in-out
+    div:hover
+      transform: scale(1.1)
+      filter: brightness(80%)
+        
 
-.rotate
-  font-size: $boardsize/12
-  padding: 0.1em
-  text-align: center
-  background: #eb8080
-  &.hide
-    visibility: hidden
